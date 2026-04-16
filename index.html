@@ -250,6 +250,99 @@ tr:hover td { background: #fff5f5; }
   .tab-btn { padding: 7px 11px; font-size: 12px; }
 }
 
+.materi-input-list-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.materi-input-row-v2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1.5px solid #e8d9b0;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: border-color 0.2s;
+}
+.materi-input-row-v2:focus-within { border-color: var(--emas); }
+.materi-input-num {
+  background: var(--emas);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.materi-input-row-v2 input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--teks);
+  background: transparent;
+  padding: 2px 0;
+}
+.btn-hapus-materi-v2 {
+  background: none;
+  border: 1.5px solid #f5c6c6;
+  color: var(--merah-kobar);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 14px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.btn-hapus-materi-v2:hover { background: #ffe8e8; }
+.btn-add-materi-v2 {
+  background: linear-gradient(135deg, var(--emas-pale) 0%, #fef3d0 100%);
+  color: var(--coklat);
+  border: 1.5px dashed var(--emas);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  transition: all 0.18s;
+}
+.spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--hijau-pale);
+  border: 1.5px solid #a8d5b5;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--hijau-kobar);
+}
+.btn-hapus-existing {
+  background: none;
+  border: none;
+  color: var(--merah-kobar);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.btn-hapus-existing:hover { opacity: 1; }
+
 .spinner { display: inline-block; width: 18px; height: 18px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -475,12 +568,13 @@ tr:hover td { background: #fff5f5; }
             <th class="no-col">No</th>
             <th>Kategori Kearifan Lokal</th>
             <th>Elemen</th>
+            <th>Fase</th>
             <th>Capaian Pembelajaran</th>
             <th>Materi Esensial</th>
           </tr>
         </thead>
         <tbody id="pub-table-body">
-          <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--teks-muted);">⚙️ Memuat data...</td></tr>
+          <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--teks-muted);">⚙️ Memuat data...</td></tr>
         </tbody>
       </table>
     </div>
@@ -513,8 +607,7 @@ tr:hover td { background: #fff5f5; }
       </div>
       <div class="inner-tabs">
         <button class="inner-tab active" onclick="switchInnerTab('elemen','kontributor')">📋 Tambah Elemen Baru</button>
-        <button class="inner-tab" onclick="switchInnerTab('cp','kontributor')">🎯 Capaian Pembelajaran</button>
-        <button class="inner-tab" onclick="switchInnerTab('materi','kontributor')">📖 Materi Esensial</button>
+        <button class="inner-tab" onclick="switchInnerTab('cp','kontributor')">🎯 Capaian Pembelajaran & Materi</button>
       </div>
 
       <!-- Panel: Elemen -->
@@ -568,7 +661,7 @@ tr:hover td { background: #fff5f5; }
         </div>
       </div>
 
-      <!-- Panel: CP -->
+      <!-- Panel: CP (gabungan dengan Materi) -->
       <div class="inner-panel" id="panel-cp-kontributor">
         <!-- Import XLS CP -->
         <div class="import-xls-card">
@@ -616,9 +709,32 @@ tr:hover td { background: #fff5f5; }
               <textarea id="new-cp-narasi" placeholder="Tuliskan narasi CP secara lengkap..." style="min-height:120px;" disabled></textarea>
             </div>
           </div>
+
+          <!-- Materi Esensial Section (terintegrasi) -->
+          <div id="cp-materi-section" style="margin-top:20px;border-top:2px dashed #f5c6c6;padding-top:20px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+              <span style="font-size:16px;">📖</span>
+              <div>
+                <div style="font-size:14px;font-weight:700;color:var(--merah-tua);">Materi Esensial</div>
+                <div style="font-size:12px;color:var(--teks-muted);">Nama Materi Esensial * <span style="font-weight:400;">(satu CP bisa berisi lebih dari satu materi)</span></div>
+              </div>
+            </div>
+
+            <!-- Materi yang sudah ada (saat CP dipilih/ditemukan) -->
+            <div id="existing-materi-preview" style="display:none;margin-bottom:16px;">
+              <div style="font-size:12.5px;font-weight:600;color:var(--hijau-kobar);margin-bottom:8px;">✅ Materi yang sudah tersimpan untuk CP ini:</div>
+              <div id="existing-materi-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;"></div>
+            </div>
+
+            <div id="materi-input-list" class="materi-input-list-v2"></div>
+            <button class="btn btn-add-materi-v2" onclick="tambahMateriInputCP()" style="margin-top:10px;">
+              <span style="font-size:16px;">+</span> Tambah Materi Lagi
+            </button>
+          </div>
+
           <div class="form-actions">
             <button class="btn btn-secondary" onclick="clearFormCP()">Batal</button>
-            <button class="btn btn-primary" onclick="simpanCP()">💾 Simpan CP</button>
+            <button class="btn btn-primary" onclick="simpanCPdanMateri()">💾 Simpan CP &amp; Materi</button>
           </div>
         </div>
         <div class="form-card">
@@ -626,89 +742,16 @@ tr:hover td { background: #fff5f5; }
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>#</th><th>Kategori</th><th>Elemen</th><th>Narasi CP</th><th>Aksi</th></tr>
+                <tr><th>#</th><th>Kategori</th><th>Elemen</th><th>Fase</th><th>Narasi CP</th><th>Materi Esensial</th><th>Aksi</th></tr>
               </thead>
               <tbody id="tbl-cp-body">
-                <tr class="loading-row"><td colspan="5"><span class="spinner"></span>Memuat data...</td></tr>
+                <tr class="loading-row"><td colspan="7"><span class="spinner"></span>Memuat data...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- Panel: Materi -->
-      <div class="inner-panel" id="panel-materi-kontributor">
-        <!-- Import XLS Materi -->
-        <div class="import-xls-card">
-          <h4>📥 Import Materi Esensial dari File Excel</h4>
-          <p>Upload file <strong>.xlsx / .xls</strong> berisi daftar materi esensial. Kolom yang dibutuhkan: <strong>id_cp</strong> (atau <strong>narasi_cp</strong>), <strong>nama_materi</strong>.</p>
-          <div class="import-xls-actions">
-            <button class="btn-import-xls" onclick="document.getElementById('import-file-materi').click()">📂 Pilih File Excel</button>
-            <input type="file" id="import-file-materi" class="import-file-input" accept=".xlsx,.xls" onchange="importMateriXLS(this)">
-            <button class="btn-tmpl-xls" onclick="downloadTemplate('materi')">⬇️ Download Template</button>
-          </div>
-          <div class="import-progress-wrap" id="import-progress-materi">
-            <div class="import-progress-bar-bg"><div class="import-progress-bar" id="import-bar-materi"></div></div>
-            <div class="import-progress-text" id="import-text-materi">Memproses...</div>
-          </div>
-          <div class="import-result-box" id="import-result-materi"></div>
-        </div>
-        <div class="form-card">
-          <h3>➕ Tambah Materi Esensial Baru</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Kategori Kearifan Lokal *</label>
-              <select id="new-materi-kategori" onchange="onKatMateriChange()">
-                <option value="">— Pilih Kategori —</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Elemen *</label>
-              <select id="new-materi-elemen" disabled onchange="onElMateriChange()">
-                <option value="">— Pilih Elemen —</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Fase *</label>
-              <select id="new-materi-fase" disabled onchange="onFaseMateriChange()">
-                <option value="">— Pilih Fase —</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Capaian Pembelajaran *</label>
-              <select id="new-materi-cp" disabled onchange="onCPMateriChange()">
-                <option value="">— Pilih CP —</option>
-              </select>
-            </div>
-          </div>
-          <div id="materi-input-container" style="display:none;">
-            <div style="margin-top:12px;margin-bottom:8px;font-size:12.5px;font-weight:600;color:var(--teks-muted);">Nama Materi Esensial * <span style="font-weight:400;color:#aaa;">(satu CP bisa berisi lebih dari satu materi)</span></div>
-            <div class="materi-input-list" id="materi-input-list">
-              <div class="materi-input-row"><input type="text" placeholder="Nama materi esensial..." class="materi-input-item"><button class="btn btn-danger btn-sm btn-icon" onclick="hapusMateriInput(this)" style="display:none;">✕</button></div>
-            </div>
-            <button class="btn btn-add-materi btn-sm" onclick="tambahMateriInput()" style="margin-top:8px;">+ Tambah Materi Lagi</button>
-          </div>
-          <div class="form-actions">
-            <button class="btn btn-secondary" onclick="clearFormMateri()">Batal</button>
-            <button class="btn btn-primary" onclick="simpanMateri()">💾 Simpan Materi</button>
-          </div>
-        </div>
-        <div class="form-card">
-          <h3>📖 Daftar Materi Esensial</h3>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>#</th><th>Kategori</th><th>Elemen</th><th>Capaian Pembelajaran</th><th>Materi Esensial</th><th>Aksi</th></tr>
-              </thead>
-              <tbody id="tbl-materi-body">
-                <tr class="loading-row"><td colspan="6"><span class="spinner"></span>Memuat data...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -980,7 +1023,6 @@ function switchInnerTab(panel, scope) {
   if (scope === 'kontributor') {
     if (panel === 'elemen') renderTblElemen();
     if (panel === 'cp') { loadKatDropdownsCP(); renderTblCP(); }
-    if (panel === 'materi') { loadKatDropdownsMateri(); renderTblMateri(); }
   }
   if (scope === 'admin') {
     if (panel === 'kategori') renderTblKategori();
@@ -1130,17 +1172,19 @@ function filterCP() {
 
   const tbody = document.getElementById('pub-table-body');
   if (!cpList.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--teks-muted);">🔍 Tidak ada CP yang sesuai filter.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--teks-muted);">🔍 Tidak ada CP yang sesuai filter.</td></tr>';
     return;
   }
   tbody.innerHTML = cpList.map(({cp, elemen, fase, kategori, materiList}, idx) => {
     const matHtml = materiList.length
       ? '<div class="materi-list">' + materiList.map(m => '<span class="materi-chip">📌 ' + m.nama + '</span>').join('') + '</div>'
       : '<span style="color:#aaa;font-size:12px;">—</span>';
+    const faseNama = fase ? fase.nama + (fase.deskripsi ? '<br><small style="color:var(--teks-muted);font-size:11px;">'+fase.deskripsi+'</small>' : '') : '—';
     return '<tr>'
       + '<td class="no-col">' + (idx+1) + '</td>'
       + '<td><span class="kat-badge">' + (kategori ? kategori.nama : '—') + '</span></td>'
       + '<td class="el-name">' + (elemen ? elemen.nama : '—') + '</td>'
+      + '<td style="white-space:nowrap;font-size:13px;font-weight:600;color:var(--biru);">' + faseNama + '</td>'
       + '<td class="cp-text">' + cp.narasi + '</td>'
       + '<td>' + matHtml + '</td>'
       + '</tr>';
@@ -1298,7 +1342,7 @@ function hapusFase(id) {
 // ===== KONTRIBUTOR: HELPERS =====
 function populateSelectsKontributor() {
   // Populate all kategori dropdowns in kontributor
-  ['new-elemen-kategori','new-cp-kategori','new-materi-kategori'].forEach(id => {
+  ['new-elemen-kategori','new-cp-kategori'].forEach(id => {
     const sel = document.getElementById(id);
     if (!sel) return;
     sel.innerHTML = '<option value="">— Pilih Kategori —</option>';
@@ -1314,20 +1358,10 @@ function loadKatDropdownsCP() {
   document.getElementById('new-cp-fase').innerHTML = '<option value="">— Pilih Fase —</option>';
   document.getElementById('new-cp-fase').disabled = true;
   document.getElementById('new-cp-narasi').disabled = true;
+  // Init materi input section
+  document.getElementById('existing-materi-preview').style.display = 'none';
+  resetMateriInputListCP();
 }
-function loadKatDropdownsMateri() {
-  const sel = document.getElementById('new-materi-kategori');
-  sel.innerHTML = '<option value="">— Pilih Kategori —</option>';
-  APP.data.kategori.forEach(k => sel.add(new Option(k.nama, k.id)));
-  document.getElementById('new-materi-elemen').innerHTML = '<option value="">— Pilih Elemen —</option>';
-  document.getElementById('new-materi-elemen').disabled = true;
-  document.getElementById('new-materi-fase').innerHTML = '<option value="">— Pilih Fase —</option>';
-  document.getElementById('new-materi-fase').disabled = true;
-  document.getElementById('new-materi-cp').innerHTML = '<option value="">— Pilih CP —</option>';
-  document.getElementById('new-materi-cp').disabled = true;
-  document.getElementById('materi-input-container').style.display = 'none';
-}
-
 // ===== KONTRIBUTOR: ELEMEN =====
 function onKatElemenChange() {
   const katId = document.getElementById('new-elemen-kategori').value;
@@ -1381,7 +1415,7 @@ function hapusElemen(id) {
   document.getElementById('modal-hapus-overlay').classList.add('open');
 }
 
-// ===== KONTRIBUTOR: CP =====
+// ===== KONTRIBUTOR: CP (gabungan dengan Materi) =====
 function onKatCPChange() {
   const katId = document.getElementById('new-cp-kategori').value;
   const selEl = document.getElementById('new-cp-elemen');
@@ -1391,45 +1425,186 @@ function onKatCPChange() {
   selFase.innerHTML = '<option value="">— Pilih Fase —</option>';
   selFase.disabled = true;
   txNar.disabled = true; txNar.value = '';
+  resetMateriSection();
   if (katId) {
     APP.data.elemen.filter(e => e.id_kategori === katId).forEach(e => selEl.add(new Option(e.nama, e.id)));
     selEl.disabled = false;
   } else {
-    selEl.disabled = true; txNar.disabled = true; txNar.value = '';
+    selEl.disabled = true;
   }
-  selEl.value = ''; txNar.disabled = true; txNar.value = '';
+  selEl.value = '';
   selEl.onchange = function() {
     selFase.innerHTML = '<option value="">— Pilih Fase —</option>';
+    resetMateriSection();
     if (this.value) {
       APP.data.fase.forEach(f => selFase.add(new Option(f.nama + (f.deskripsi?' ('+f.deskripsi+')':''), f.id)));
       selFase.disabled = false;
     } else { selFase.disabled = true; txNar.disabled = true; txNar.value = ''; }
     txNar.disabled = !this.value; if(!this.value) txNar.value='';
   };
-  selFase.onchange = function() { txNar.disabled = !this.value; };
+  selFase.onchange = function() {
+    txNar.disabled = !this.value;
+    resetMateriSection();
+    // Cek apakah sudah ada CP untuk elemen+fase ini
+    const elId = selEl.value;
+    const faseId = this.value;
+    if (elId && faseId) {
+      const existingCP = APP.data.cp.find(c => c.id_elemen === elId && c.id_fase === faseId);
+      if (existingCP) {
+        // Ada CP yang sudah tersimpan - tampilkan materinya
+        txNar.value = existingCP.narasi;
+        tampilkanMateriExisting(existingCP.id);
+        // Store existing CP id for update mode
+        document.getElementById('new-cp-narasi').dataset.existingCpId = existingCP.id;
+        showToast('ℹ️ CP untuk elemen & fase ini sudah ada. Materi yang tersimpan ditampilkan.', false);
+      } else {
+        delete document.getElementById('new-cp-narasi').dataset.existingCpId;
+      }
+    }
+  };
 }
+
+function tampilkanMateriExisting(cpId) {
+  const existingMateri = APP.data.materi.filter(m => m.id_cp === cpId);
+  const preview = document.getElementById('existing-materi-preview');
+  const list = document.getElementById('existing-materi-list');
+  if (existingMateri.length) {
+    list.innerHTML = existingMateri.map(m =>
+      '<span class="existing-materi-chip-item">📌 ' + m.nama +
+      ' <button class="btn-hapus-existing" onclick="hapusMateriExisting(\'' + m.id + '\')" title="Hapus materi ini">✕</button></span>'
+    ).join('');
+    preview.style.display = 'block';
+  } else {
+    preview.style.display = 'none';
+  }
+  resetMateriInputListCP();
+}
+
+function hapusMateriExisting(id) {
+  if (!confirm('Hapus materi ini?')) return;
+  APP.data.materi = APP.data.materi.filter(x => x.id !== id);
+  saveLocal('materi');
+  // Re-render existing preview
+  const cpId = document.getElementById('new-cp-narasi').dataset.existingCpId;
+  if (cpId) tampilkanMateriExisting(cpId);
+  renderTblCP();
+  showToast('🗑️ Materi dihapus.');
+}
+
+function resetMateriSection() {
+  document.getElementById('existing-materi-preview').style.display = 'none';
+  document.getElementById('existing-materi-list').innerHTML = '';
+  delete document.getElementById('new-cp-narasi').dataset.existingCpId;
+  resetMateriInputListCP();
+}
+
+function resetMateriInputListCP() {
+  const list = document.getElementById('materi-input-list');
+  list.innerHTML = '';
+  tambahMateriInputCP(); // tambah satu baris kosong
+}
+
+function tambahMateriInputCP() {
+  const list = document.getElementById('materi-input-list');
+  const count = list.querySelectorAll('.materi-input-row-v2').length + 1;
+  const div = document.createElement('div');
+  div.className = 'materi-input-row-v2';
+  div.innerHTML =
+    '<span class="materi-input-num">' + count + '</span>' +
+    '<input type="text" placeholder="Nama materi esensial..." class="materi-input-item">' +
+    '<button class="btn-hapus-materi-v2" onclick="hapusMateriInputCP(this)" title="Hapus baris ini">✕</button>';
+  list.appendChild(div);
+  renumberMateriInputs();
+  // Sembunyikan tombol hapus jika hanya 1 baris
+  const rows = list.querySelectorAll('.materi-input-row-v2');
+  rows.forEach((r, i) => {
+    r.querySelector('.btn-hapus-materi-v2').style.display = rows.length > 1 ? '' : 'none';
+  });
+  const inp = div.querySelector('input');
+  if (inp) inp.focus();
+}
+
+function hapusMateriInputCP(btn) {
+  btn.closest('.materi-input-row-v2').remove();
+  renumberMateriInputs();
+  const rows = document.getElementById('materi-input-list').querySelectorAll('.materi-input-row-v2');
+  rows.forEach(r => { r.querySelector('.btn-hapus-materi-v2').style.display = rows.length > 1 ? '' : 'none'; });
+}
+
+function renumberMateriInputs() {
+  document.getElementById('materi-input-list').querySelectorAll('.materi-input-row-v2').forEach((r, i) => {
+    r.querySelector('.materi-input-num').textContent = i + 1;
+  });
+}
+
 function renderTblCP() {
   const tbody = document.getElementById('tbl-cp-body');
-  if (!APP.data.cp.length) { tbody.innerHTML = '<tr class="no-data-row"><td colspan="5">Belum ada data CP.</td></tr>'; return; }
+  if (!APP.data.cp.length) { tbody.innerHTML = '<tr class="no-data-row"><td colspan="7">Belum ada data CP.</td></tr>'; return; }
   tbody.innerHTML = APP.data.cp.map((cp,i) => {
     const el = APP.data.elemen.find(e=>e.id===cp.id_elemen);
     const kat = el ? APP.data.kategori.find(k=>k.id===el.id_kategori) : null;
-    return '<tr><td>' + (i+1) + '</td><td>' + (kat?kat.nama:'—') + '</td><td>' + (el?el.nama:cp.id_elemen) + '</td><td style="max-width:280px;font-size:13px;">' + cp.narasi.substring(0,120) + (cp.narasi.length>120?'...':'') + '</td><td><div class="td-actions"><button class="btn btn-warning btn-sm btn-icon" onclick="editCP(\'' + cp.id + '\')">✏️</button><button class="btn btn-danger btn-sm btn-icon" onclick="hapusCP(\'' + cp.id + '\')">🗑️</button></div></td></tr>';
+    const fase = APP.data.fase.find(f=>f.id===cp.id_fase);
+    const materiList = APP.data.materi.filter(m => m.id_cp === cp.id);
+    const matHtml = materiList.length
+      ? materiList.map(m => '<span class="materi-chip" style="margin:2px;">📌 ' + m.nama + '</span>').join('')
+      : '<span style="color:#aaa;font-size:12px;">—</span>';
+    return '<tr>' +
+      '<td>' + (i+1) + '</td>' +
+      '<td style="font-size:12.5px;">' + (kat?kat.nama:'—') + '</td>' +
+      '<td style="font-size:13px;font-weight:600;">' + (el?el.nama:cp.id_elemen) + '</td>' +
+      '<td style="font-size:12.5px;color:var(--biru);font-weight:600;white-space:nowrap;">' + (fase?fase.nama:'—') + '</td>' +
+      '<td style="max-width:220px;font-size:13px;">' + cp.narasi.substring(0,100) + (cp.narasi.length>100?'...':'') + '</td>' +
+      '<td style="max-width:180px;">' + matHtml + '</td>' +
+      '<td><div class="td-actions"><button class="btn btn-warning btn-sm btn-icon" onclick="editCP(\'' + cp.id + '\')">✏️</button><button class="btn btn-danger btn-sm btn-icon" onclick="hapusCP(\'' + cp.id + '\')">🗑️</button></div></td>' +
+      '</tr>';
   }).join('');
 }
-async function simpanCP() {
+
+async function simpanCPdanMateri() {
   const elId = document.getElementById('new-cp-elemen').value;
   const faseId = document.getElementById('new-cp-fase').value;
   const narasi = document.getElementById('new-cp-narasi').value.trim();
   if (!elId || !faseId || !narasi) { showToast('⚠️ Pilih elemen, fase, dan isi narasi CP.', true); return; }
-  const newItem = { id: genId(), id_elemen: elId, id_fase: faseId, narasi };
-  APP.data.cp.push(newItem);
-  saveLocal('cp'); renderTblCP(); clearFormCP();
-  showToast('✅ CP disimpan! Mengirim ke Google Sheet...');
-  const result = await apiPost('addCP', newItem);
-  if (result && result.status === 'ok') showToast('✅ CP tersimpan di Google Sheet!');
-  else showToast('⚠️ Tersimpan lokal. Sinkron Sheet mungkin perlu dicoba ulang.', true);
+
+  const namaMateriList = Array.from(document.querySelectorAll('#materi-input-list .materi-input-item'))
+    .map(i => i.value.trim()).filter(v => v);
+
+  const existingCpId = document.getElementById('new-cp-narasi').dataset.existingCpId;
+  let cpId;
+
+  if (existingCpId) {
+    // Update CP yang sudah ada
+    const cp = APP.data.cp.find(c => c.id === existingCpId);
+    if (cp) { cp.narasi = narasi; saveLocal('cp'); }
+    cpId = existingCpId;
+    showToast('✅ CP diperbarui! Mengirim ke Google Sheet...');
+    await apiPost('updateCP', { id: cpId, id_elemen: elId, id_fase: faseId, narasi });
+  } else {
+    // Simpan CP baru
+    const newCP = { id: genId(), id_elemen: elId, id_fase: faseId, narasi };
+    APP.data.cp.push(newCP);
+    saveLocal('cp');
+    cpId = newCP.id;
+    showToast('✅ CP disimpan! Mengirim ke Google Sheet...');
+    await apiPost('addCP', newCP);
+  }
+
+  // Simpan materi baru
+  if (namaMateriList.length) {
+    const newMateri = namaMateriList.map(nama => ({ id: genId(), id_cp: cpId, nama }));
+    newMateri.forEach(item => APP.data.materi.push(item));
+    saveLocal('materi');
+    showToast('✅ ' + namaMateriList.length + ' Materi disimpan! Mengirim ke Google Sheet...');
+    for (const item of newMateri) { await apiPost('addMateri', item); }
+    showToast('✅ CP & Materi berhasil disimpan!');
+  } else {
+    showToast('✅ CP berhasil disimpan!');
+  }
+
+  renderTblCP();
+  clearFormCP();
 }
+
 function clearFormCP() {
   document.getElementById('new-cp-kategori').value = '';
   document.getElementById('new-cp-elemen').innerHTML = '<option value="">— Pilih Elemen —</option>';
@@ -1438,13 +1613,18 @@ function clearFormCP() {
   document.getElementById('new-cp-fase').disabled = true;
   document.getElementById('new-cp-narasi').value = '';
   document.getElementById('new-cp-narasi').disabled = true;
+  resetMateriSection();
 }
+
 function editCP(id) {
   const cp = APP.data.cp.find(x=>x.id===id); if(!cp) return;
   const elOpts = APP.data.elemen.map(e => '<option value="' + e.id + '"' + (e.id===cp.id_elemen?' selected':'') + '>' + e.nama + '</option>').join('');
   const faseOpts = APP.data.fase.map(f => '<option value="' + f.id + '"' + (f.id===cp.id_fase?' selected':'') + '>' + f.nama + (f.deskripsi?' ('+f.deskripsi+')':'') + '</option>').join('');
   document.getElementById('modal-edit-title').textContent = '✏️ Edit Capaian Pembelajaran';
-  document.getElementById('modal-edit-body').innerHTML = '<div class="form-group" style="margin-bottom:12px;"><label>Elemen</label><select id="edit-cp-el">' + elOpts + '</select></div><div class="form-group" style="margin-bottom:12px;"><label>Fase</label><select id="edit-cp-fase">' + faseOpts + '</select></div><div class="form-group"><label>Narasi CP</label><textarea id="edit-cp-narasi" style="min-height:100px;">' + cp.narasi + '</textarea></div>';
+  document.getElementById('modal-edit-body').innerHTML =
+    '<div class="form-group" style="margin-bottom:12px;"><label>Elemen</label><select id="edit-cp-el">' + elOpts + '</select></div>' +
+    '<div class="form-group" style="margin-bottom:12px;"><label>Fase</label><select id="edit-cp-fase">' + faseOpts + '</select></div>' +
+    '<div class="form-group"><label>Narasi CP</label><textarea id="edit-cp-narasi" style="min-height:100px;">' + cp.narasi + '</textarea></div>';
   document.getElementById('modal-edit-save').onclick = async () => {
     cp.id_elemen = document.getElementById('edit-cp-el').value;
     cp.id_fase = document.getElementById('edit-cp-fase').value;
@@ -1457,6 +1637,7 @@ function editCP(id) {
   };
   document.getElementById('modal-edit-overlay').classList.add('open');
 }
+
 function hapusCP(id) {
   document.getElementById('modal-hapus-msg').textContent = 'Hapus CP ini? Materi esensial yang terkait juga akan terpengaruh.';
   document.getElementById('modal-hapus-confirm').onclick = () => {
@@ -1465,113 +1646,6 @@ function hapusCP(id) {
   document.getElementById('modal-hapus-overlay').classList.add('open');
 }
 
-// ===== KONTRIBUTOR: MATERI ESENSIAL =====
-function onKatMateriChange() {
-  const katId = document.getElementById('new-materi-kategori').value;
-  const selEl = document.getElementById('new-materi-elemen');
-  selEl.innerHTML = '<option value="">— Pilih Elemen —</option>';
-  if (katId) {
-    APP.data.elemen.filter(e => e.id_kategori === katId).forEach(e => selEl.add(new Option(e.nama, e.id)));
-    selEl.disabled = false;
-  } else { selEl.disabled = true; }
-  document.getElementById('new-materi-fase').innerHTML = '<option value="">— Pilih Fase —</option>';
-  document.getElementById('new-materi-fase').disabled = true;
-  document.getElementById('new-materi-cp').innerHTML = '<option value="">— Pilih CP —</option>';
-  document.getElementById('new-materi-cp').disabled = true;
-  document.getElementById('materi-input-container').style.display = 'none';
-}
-function onElMateriChange() {
-  const elId = document.getElementById('new-materi-elemen').value;
-  const selFase = document.getElementById('new-materi-fase');
-  selFase.innerHTML = '<option value="">— Pilih Fase —</option>';
-  if (elId) {
-    // Get phases that have CP for this element
-    const cpForEl = APP.data.cp.filter(c => c.id_elemen === elId);
-    const faseIds = [...new Set(cpForEl.map(c => c.id_fase))];
-    APP.data.fase.filter(f => faseIds.includes(f.id)).forEach(f => selFase.add(new Option(f.nama + (f.deskripsi?' ('+f.deskripsi+')':''), f.id)));
-    selFase.disabled = false;
-  } else { selFase.disabled = true; }
-  document.getElementById('new-materi-cp').innerHTML = '<option value="">— Pilih CP —</option>';
-  document.getElementById('new-materi-cp').disabled = true;
-  document.getElementById('materi-input-container').style.display = 'none';
-}
-function onFaseMateriChange() {
-  const elId = document.getElementById('new-materi-elemen').value;
-  const faseId = document.getElementById('new-materi-fase').value;
-  const selCP = document.getElementById('new-materi-cp');
-  selCP.innerHTML = '<option value="">— Pilih CP —</option>';
-  if (elId && faseId) {
-    APP.data.cp.filter(c => c.id_elemen === elId && c.id_fase === faseId).forEach(c => {
-      selCP.add(new Option(c.narasi.substring(0,80) + '...', c.id));
-    });
-    selCP.disabled = false;
-  } else { selCP.disabled = true; }
-  document.getElementById('materi-input-container').style.display = 'none';
-}
-function onCPMateriChange() {
-  const cpId = document.getElementById('new-materi-cp').value;
-  const container = document.getElementById('materi-input-container');
-  if (cpId) {
-    container.style.display = 'block';
-    resetMateriInputList();
-  } else { container.style.display = 'none'; }
-}
-function resetMateriInputList() {
-  const list = document.getElementById('materi-input-list');
-  list.innerHTML = '<div class="materi-input-row"><input type="text" placeholder="Nama materi esensial..." class="materi-input-item"><button class="btn btn-danger btn-sm btn-icon" onclick="hapusMateriInput(this)" style="display:none;">✕</button></div>';
-}
-function tambahMateriInput() {
-  const list = document.getElementById('materi-input-list');
-  const div = document.createElement('div'); div.className = 'materi-input-row';
-  div.innerHTML = '<input type="text" placeholder="Nama materi esensial..." class="materi-input-item"><button class="btn btn-danger btn-sm btn-icon" onclick="hapusMateriInput(this)">✕</button>';
-  list.appendChild(div);
-  // Show delete button on first row if multiple rows
-  list.querySelectorAll('.materi-input-row')[0].querySelector('button').style.display = 'inline-block';
-}
-function hapusMateriInput(btn) {
-  const row = btn.closest('.materi-input-row');
-  row.remove();
-  const rows = document.getElementById('materi-input-list').querySelectorAll('.materi-input-row');
-  if (rows.length === 1) rows[0].querySelector('button').style.display = 'none';
-}
-function renderTblMateri() {
-  const tbody = document.getElementById('tbl-materi-body');
-  if (!APP.data.materi.length) { tbody.innerHTML = '<tr class="no-data-row"><td colspan="6">Belum ada data materi esensial.</td></tr>'; return; }
-  tbody.innerHTML = APP.data.materi.map((m,i) => {
-    const cp = APP.data.cp.find(c=>c.id===m.id_cp);
-    const el = cp ? APP.data.elemen.find(e=>e.id===cp.id_elemen) : null;
-    const kat = el ? APP.data.kategori.find(k=>k.id===el.id_kategori) : null;
-    return '<tr><td>' + (i+1) + '</td><td>' + (kat?kat.nama:'—') + '</td><td>' + (el?el.nama:'—') + '</td><td style="font-size:12.5px;max-width:200px;">' + (cp?cp.narasi.substring(0,80)+'...':'—') + '</td><td><strong>' + m.nama + '</strong></td><td><div class="td-actions"><button class="btn btn-warning btn-sm btn-icon" onclick="editMateri(\'' + m.id + '\')">✏️</button><button class="btn btn-danger btn-sm btn-icon" onclick="hapusMateri(\'' + m.id + '\')">🗑️</button></div></td></tr>';
-  }).join('');
-}
-async function simpanMateri() {
-  const cpId = document.getElementById('new-materi-cp').value;
-  if (!cpId) { showToast('⚠️ Pilih CP terlebih dahulu.', true); return; }
-  const inputs = document.querySelectorAll('.materi-input-item');
-  const namaList = Array.from(inputs).map(i=>i.value.trim()).filter(v=>v);
-  if (!namaList.length) { showToast('⚠️ Isi minimal satu nama materi esensial.', true); return; }
-  const newItems = namaList.map(nama => ({ id: genId(), id_cp: cpId, nama }));
-  newItems.forEach(item => APP.data.materi.push(item));
-  saveLocal('materi'); renderTblMateri(); clearFormMateri();
-  showToast('✅ ' + namaList.length + ' Materi disimpan! Mengirim ke Google Sheet...');
-  let allOk = true;
-  for (const item of newItems) {
-    const result = await apiPost('addMateri', item);
-    if (!result || result.status !== 'ok') { allOk = false; }
-  }
-  if (allOk) showToast('✅ Materi tersimpan di Google Sheet!');
-  else showToast('⚠️ Sebagian tersimpan lokal. Sinkron Sheet mungkin perlu dicoba ulang.', true);
-}
-function clearFormMateri() {
-  document.getElementById('new-materi-kategori').value = '';
-  document.getElementById('new-materi-elemen').innerHTML = '<option value="">— Pilih Elemen —</option>';
-  document.getElementById('new-materi-elemen').disabled = true;
-  document.getElementById('new-materi-fase').innerHTML = '<option value="">— Pilih Fase —</option>';
-  document.getElementById('new-materi-fase').disabled = true;
-  document.getElementById('new-materi-cp').innerHTML = '<option value="">— Pilih CP —</option>';
-  document.getElementById('new-materi-cp').disabled = true;
-  document.getElementById('materi-input-container').style.display = 'none';
-}
 function editMateri(id) {
   const m = APP.data.materi.find(x=>x.id===id); if(!m) return;
   const cpOpts = APP.data.cp.map(cp => {
@@ -1579,18 +1653,21 @@ function editMateri(id) {
     return '<option value="' + cp.id + '"' + (cp.id===m.id_cp?' selected':'') + '>' + (el?el.nama:cp.id) + ': ' + cp.narasi.substring(0,50) + '...' + '</option>';
   }).join('');
   document.getElementById('modal-edit-title').textContent = '✏️ Edit Materi Esensial';
-  document.getElementById('modal-edit-body').innerHTML = '<div class="form-group" style="margin-bottom:12px;"><label>Capaian Pembelajaran</label><select id="edit-mt-cp">' + cpOpts + '</select></div><div class="form-group"><label>Nama Materi</label><input type="text" id="edit-mt-nama" value="' + m.nama + '"></div>';
+  document.getElementById('modal-edit-body').innerHTML =
+    '<div class="form-group" style="margin-bottom:12px;"><label>Capaian Pembelajaran</label><select id="edit-mt-cp">' + cpOpts + '</select></div>' +
+    '<div class="form-group"><label>Nama Materi</label><input type="text" id="edit-mt-nama" value="' + m.nama + '"></div>';
   document.getElementById('modal-edit-save').onclick = () => {
     m.id_cp = document.getElementById('edit-mt-cp').value;
     m.nama = document.getElementById('edit-mt-nama').value.trim();
-    saveLocal('materi'); renderTblMateri(); closeModal(); showToast('✅ Materi diperbarui!');
+    saveLocal('materi'); renderTblCP(); closeModal(); showToast('✅ Materi diperbarui!');
   };
   document.getElementById('modal-edit-overlay').classList.add('open');
 }
+
 function hapusMateri(id) {
   document.getElementById('modal-hapus-msg').textContent = 'Hapus materi esensial ini?';
   document.getElementById('modal-hapus-confirm').onclick = () => {
-    APP.data.materi = APP.data.materi.filter(x=>x.id!==id); saveLocal('materi'); renderTblMateri(); closeModal(); showToast('🗑️ Materi dihapus.');
+    APP.data.materi = APP.data.materi.filter(x=>x.id!==id); saveLocal('materi'); renderTblCP(); closeModal(); showToast('🗑️ Materi dihapus.');
   };
   document.getElementById('modal-hapus-overlay').classList.add('open');
 }
